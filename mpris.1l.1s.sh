@@ -11,15 +11,19 @@ STATE=$($COMMAND_BASE status)
 ARTIST=$($COMMAND_BASE metadata xesam:artist)
 SONG_TITLE=$($COMMAND_BASE metadata xesam:title)
 
-ART_URL=$($COMMAND_BASE metadata mpris:artUrl)
+# ART IMAGE
 
-# workaround spotify not caring to update their client on linux
-ART_URL="${ART_URL/"open.spotify.com"/"i.scdn.co"}"
+ART_ID=$($COMMAND_BASE metadata mpris:artUrl)
+ART_ID="${ART_ID/'https://open.spotify.com/image/'/''}"
 
-ART_IMG=$(curl -s "$ART_URL" | base64 -w 0)
+ART_URL="https://i.scdn.co/image/$ART_ID"
 
-# get current hour (24 clock format i.e. 0-23)
-HOUR=$(date +"%H")
+ART_PATH="$HOME/.cache/$ART_ID"
+
+# cache art img to disk
+wget -q -nc "$ART_URL" -O "$ART_PATH"
+
+ART_IMG=$(base64 -w 0 $ART_PATH)
 
 # PLAY/PAUSE FORMAT
 
@@ -30,6 +34,9 @@ else
 fi
 
 # GREET FORMAT
+
+# get current hour (24 clock format i.e. 0-23)
+HOUR=$(date +"%H")
 
 # if it is midnight to midafternoon will say G'morning
 if [ $HOUR -ge 0 -a $HOUR -lt 12 ]; then
