@@ -1,5 +1,5 @@
 Works only with Spotify!
-This script requires the [Argos GNOME Shell extension](https://github.com/p-e-w/argos) and a CLI tool called [playerctl](https://www.archlinux.org/packages/community/x86_64/playerctl/).
+This script requires the [Argos GNOME Shell extension](https://github.com/p-e-w/argos) and a CLI tool called [playerctl](https://github.com/acrisci/playerctl).
 
 ### Features
 * Shows Artist and song name in the system tray.
