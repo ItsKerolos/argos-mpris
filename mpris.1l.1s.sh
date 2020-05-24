@@ -13,13 +13,13 @@ SONG_TITLE=$($COMMAND_BASE metadata xesam:title)
 
 ART_URL=$($COMMAND_BASE metadata mpris:artUrl)
 
-# Workaround: Spotify not caring to update their client on linux.
+# workaround spotify not caring to update their client on linux
 ART_URL="${ART_URL/"open.spotify.com"/"i.scdn.co"}"
 
 ART_IMG=$(curl -s "$ART_URL" | base64 -w 0)
 
 # get current hour (24 clock format i.e. 0-23)
-hour=$(date +"%H")
+HOUR=$(date +"%H")
 
 # PLAY/PAUSE FORMAT
 
@@ -32,19 +32,19 @@ fi
 # GREET FORMAT
 
 # if it is midnight to midafternoon will say G'morning
-if [ $hour -ge 0 -a $hour -lt 12 ]; then
-  greet="Good Morning, $USER."
+if [ $HOUR -ge 0 -a $HOUR -lt 12 ]; then
+  GREET="Good Morning, $USER."
 # if it is midafternoon to evening ( before 6 pm) will say G'noon
-elif [ $hour -ge 12 -a $hour -lt 18 ]; then
-  greet="Good Afternoon, $USER."
+elif [ $HOUR -ge 12 -a $HOUR -lt 18 ]; then
+  GREET="Good Afternoon, $USER."
 else # it is good evening till midnight
-  greet="Good evening, $USER."
+  GREET="Good evening, $USER."
 fi
 
 # TITLE FORMAT
 
 if [[ -z "$SONG_TITLE" ]]; then
-  TITLE="$greet"
+  TITLE="$GREET"
 elif [[ -z "$ARTIST" ]]; then
   TITLE="$SONG_TITLE"
 else
@@ -55,11 +55,14 @@ fi
 
 echo "$TITLE"
 echo "---"
-echo "<b>$ARTIST</b>\n<b>$SONG_TITLE</b> | image='$ART_IMG' imageWidth=56 imageHeight=56"
-echo "---"
-echo "$STATE | bash='$PLAY_PAUSE' terminal=false refresh=true"
-echo "---"
-echo "Next | bash='$NEXT' terminal=false refresh=true"
-echo "Previous | bash='$PREVIOUS' terminal=false refresh=true"
-echo "---"
-echo "Launch | bash='spotify' terminal=false refresh=false"
+
+if [ "$TITLE" != "$GREET" ]; then
+  echo "<b>$ARTIST</b>\n<b>$SONG_TITLE</b> | image='$ART_IMG' imageWidth=56 imageHeight=56"
+  echo "---"
+  echo "$STATE | bash='$PLAY_PAUSE' terminal=false refresh=true"
+  echo "---"
+  echo "Next | bash='$NEXT' terminal=false refresh=true"
+  echo "Previous | bash='$PREVIOUS' terminal=false refresh=true"
+else
+  echo "Launch | bash='spotify' terminal=false refresh=false"
+fi
