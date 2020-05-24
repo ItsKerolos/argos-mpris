@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-COMMAND_BASE='dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2'
+COMMAND_BASE='playerctl --player=spotify'
 
-PLAY_PAUSE="$COMMAND_BASE org.mpris.MediaPlayer2.Player.PlayPause"
-NEXT="$COMMAND_BASE org.mpris.MediaPlayer2.Player.Next"
-PREVIOUS="$COMMAND_BASE org.mpris.MediaPlayer2.Player.Previous"
+PLAY_PAUSE="$COMMAND_BASE play-pause"
+NEXT="$COMMAND_BASE next"
+PREVIOUS="$COMMAND_BASE previous"
 
-MPRIS_META=$($COMMAND_BASE org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata)
+ARTIST=$($COMMAND_BASE metadata xesam:artist)
+SONG_TITLE=$($COMMAND_BASE metadata xesam:title)
 
-ARTIST=$(echo "$MPRIS_META" | sed -n '/artist/{n;n;p}' | cut -d '"' -f 2)
-SONG_TITLE=$(echo "$MPRIS_META" | sed -n '/title/{n;p}' | cut -d '"' -f 2)
+ART_URL=$($COMMAND_BASE metadata mpris:artUrl)
 
 # get current hour (24 clock format i.e. 0-23)
 hour=$(date +"%H")
@@ -26,17 +26,17 @@ fi
 
 if [[ -z "$SONG_TITLE" ]]; then
   TITLE="$greet"
+elif [[ -z "$ARTIST" ]]; then
+  TITLE="$SONG_TITLE"
 else
   TITLE="$ARTIST - $SONG_TITLE"
 fi
 
 echo "$TITLE"
 echo "---"
-echo "Focus | bash='wmctrl -a $SONG_TITLE' terminal=false refresh=false"
-echo "---"
-echo "Play/Pause | bash='$PLAY_PAUSE' terminal=false refresh=false"
+echo "Play - Pause | bash='$PLAY_PAUSE' terminal=false refresh=false"
 echo "---"
 echo "Next | bash='$NEXT' terminal=false refresh=true"
 echo "Previous | bash='$PREVIOUS' terminal=false refresh=true"
 echo "---"
-echo "Launch | bash='spotify & sleep 0.35 && xdotool getactivewindow windowminimize' terminal=false refresh=false"
+echo "Launch | bash='spotify' terminal=false refresh=false"
