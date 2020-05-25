@@ -12,7 +12,7 @@ it aslo optionally requires [xclip](https://github.com/astrand/xclip) & notify-s
 
 ### Installation
 
-Place mpris.1l.1s.sh file into ~/.config/argos directory and make it executable:
+Place spotify.1l.1s.sh file into ~/.config/argos directory and make it executable:
 ```bash
-chmod +x ~/.config/argos/mpris.1l.1s.sh
+chmod +x ~/.config/argos/spotify.1l.1s.sh
 ```
