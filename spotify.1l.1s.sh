@@ -2,14 +2,17 @@
 
 COMMAND_BASE='playerctl --player=spotify'
 
+SONG_ARTIST=$($COMMAND_BASE metadata xesam:artist)
+SONG_TITLE=$($COMMAND_BASE metadata xesam:title)
+
+SONG_URL=$($COMMAND_BASE metadata xesam:url)
+
 PLAY_PAUSE="$COMMAND_BASE play-pause"
 NEXT="$COMMAND_BASE next"
 PREVIOUS="$COMMAND_BASE previous"
 
-STATE=$($COMMAND_BASE status)
-
-ARTIST=$($COMMAND_BASE metadata xesam:artist)
-SONG_TITLE=$($COMMAND_BASE metadata xesam:title)
+COPY_URL="echo $SONG_URL | xclip -sel clip"
+COPY_NOTIFY="notify-send \"Spotify\" \"Copied track url to clipboard.\""
 
 # ART IMAGE
 
@@ -24,14 +27,6 @@ ART_PATH="$HOME/.cache/$ART_ID"
 wget -q -nc "$ART_URL" -O "$ART_PATH"
 
 ART_IMG=$(base64 -w 0 $ART_PATH)
-
-# PLAY/PAUSE FORMAT
-
-if [ "$STATE" == "Playing" ]; then
-    STATE="Pause"
-else
-    STATE="Play"
-fi
 
 # GREET FORMAT
 
@@ -48,14 +43,24 @@ else # it is good evening till midnight
   GREET="Good evening, $USER."
 fi
 
+# PLAY/PAUSE FORMAT
+
+STATE=$($COMMAND_BASE status)
+
+if [ "$STATE" == "Playing" ]; then
+    STATE="Pause"
+else
+    STATE="Play"
+fi
+
 # TITLE FORMAT
 
 if [[ -z "$SONG_TITLE" ]]; then
   TITLE="$GREET"
-elif [[ -z "$ARTIST" ]]; then
+elif [[ -z "$SONG_ARTIST" ]]; then
   TITLE="$SONG_TITLE"
 else
-  TITLE="$ARTIST - $SONG_TITLE"
+  TITLE="$SONG_ARTIST - $SONG_TITLE"
 fi
 
 # ARGOS OUTPUT
@@ -63,8 +68,9 @@ fi
 echo "$TITLE"
 echo "---"
 
+# if spotify is running
 if [ "$TITLE" != "$GREET" ]; then
-  echo "<b>$ARTIST</b>\n<b>$SONG_TITLE</b> | image='$ART_IMG' imageWidth=56 imageHeight=56"
+  echo "<b>$SONG_ARTIST</b>\n<b>$SONG_TITLE</b> | bash='$COPY_URL && $COPY_NOTIFY' terminal=false image='$ART_IMG' imageWidth=56 imageHeight=56"
   echo "---"
   echo "$STATE | bash='$PLAY_PAUSE' terminal=false refresh=true"
   echo "---"
