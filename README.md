@@ -1,3 +1,9 @@
+
+### This package has been deprecated.
+#### In favor of [Plug](https://github.com/ItsKerolos/plug) and [Plug-In-Spotify](https://github.com/ItsKerolos/plug-in-spotify).
+
+</br></br>
+
 This script requires the [Argos GNOME Shell extension](https://github.com/p-e-w/argos) and [playerctl](https://github.com/acrisci/playerctl).
 it aslo optionally requires [xclip](https://github.com/astrand/xclip) & notify-send
 
